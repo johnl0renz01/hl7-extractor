@@ -31,6 +31,11 @@ $ select python interpreter (recommended)
 $ (env) python main.py
 ```
 
+7. Import database into pgAdmin4 named "HL7" database
+```
+$ download hl7.sql file and import
+```
+
 This server will start on port 5000 by default. You can change this in `main.py` by changing the following line to this:
 
 ```python
