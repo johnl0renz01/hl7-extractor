@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Task Master</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">Results</h1>
+    <table>
+        <tr>
+            {% for key in data.keys() %}
+            <th>{{key}}</th>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+{% endblock %}

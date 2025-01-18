@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Update Message</title>
+{% endblock %}
+
+{% block body %}
+<div class="content" style="width: 50%;">
+    <h1 style="text-align: center">Update Message</h1>
+   
+    <div class="form" >
+        <form action="/update/{{message.id}}" method="POST">
+            <textarea type="text" name="content" id="content" style="width: 100%;" rows="15" placeholder="Enter Hl7 message...">{{message.content}}</textarea>
+            <div class="" style="display:flex;justify-content:space-between;">
+                <a href="/" style="background-color: ButtonFace; color: black; padding: 3px 10px;border: solid 1px #838383;text-decoration: none;">Go Back</a>
+                <input type="submit" value="Update">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

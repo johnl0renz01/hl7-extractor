@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Results</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center;">Results</h1>
+    {% for item in data.keys() %}
+        {% if data[item] != '' %}
+            {% if not data[item]|is_list %}
+            <div class="font-weight-bold text-uppercase mt-4">{{ item }}</div>
+            <table style="table-layout: auto">
+                <tr>
+                    {% for key in data[item].keys() %}
+                        
+                        <th style="padding-right: 20px;white-space:wrap;">{{ loop.index }}. {{key}}</th>
+                        {% if data[item][key] != '' and data[item][key] != None %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for val in data[item].values() %}
+                            {% if val|is_list %}
+                                <td style="padding-right: 20px;white-space:wrap;">
+                                {% for _ in val %}
+                                    {% if _ != '' %}
+                                    <li>{{_}}</li>
+                                    {% endif %}
+                                {% endfor %}
+                                </td>
+                            {% else %}
+                            <td style="padding-right: 20px;white-space:wrap;">{{val}}</td>
+                            {% endif %}
+                        {% if val != '' and val != None %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

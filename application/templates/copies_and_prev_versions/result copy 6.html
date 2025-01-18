@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Results</title>
+{% endblock %}
+
+{% block body %}
+<div class="content" style="padding-top: 2rem;">
+    <h1 style="text-align: center">Results</h1>
+    
+    {# For non repeating segment (SINGLE) #}
+
+    {% for item in data.keys() %}
+        {% if data[item] != '' %}
+            {% if not data[item]|is_list %}
+            <div class="font-weight-bold text-uppercase mt-4">{{ item }}</div>
+            <table style="table-layout: auto">
+                <tr>
+                    {% for key in data[item].keys() %}
+                        {% if data[item][key] != None %}
+                        <th style="padding-right: 20px;white-space:wrap;">{{ loop.index }}. {{key}}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    {% for val in data[item].values() %}
+                            {% if val|is_list %}
+                                <td style="padding-right: 20px;white-space:wrap;">
+                                {% for _ in val %}
+                                    {% if _ != '' %}
+                                    <li>{{_}}</li>
+                                    {% endif %}
+                                {% endfor %}
+                                </td>
+                            {% else %}
+                                {% if val != None %}
+                                <td style="padding-right: 20px;white-space:wrap;">{{val}}</td>
+                                {% endif %}
+                            {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+
+    {# For repeating segments (MULTIPLE) #}
+
+    {% for item in data.keys() %}
+        {% if data[item] != '' %}
+            {% if data[item]|is_list %}
+            <div class="font-weight-bold text-uppercase mt-4">{{ item }}</div>
+            <table style="table-layout: auto">
+                <tr>
+                    {% for key in data[item][0] %}
+                        <th style="padding-right: 20px;white-space:wrap;">{{ loop.index }}. {{key}}</th>
+                    {% endfor %}
+                </tr>
+
+                {% for arr_item in data[item] %}
+                    <tr>
+                        {% for val in arr_item.values() %}
+                                {% if val|is_list %}
+                                    <td style="padding-right: 20px;white-space:wrap;">
+                                    {% for _ in val %}
+                                        {% if _ != '' %}
+                                        <li>{{_}}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </td>
+                                {% else %}
+                                    <td style="padding-right: 20px;white-space:wrap;">
+                                        {% if val != '' and val != None %}
+                                            {{val}}
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+</div>
+{% endblock %}
