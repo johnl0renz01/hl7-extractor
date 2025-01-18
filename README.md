@@ -14,13 +14,19 @@ $ .venv\Scripts\activate
 $ pip install -r requirements.txt
 ```
 
-3. Select python interpreter (VSCODE):
+4. Create .env file under application folder:
+```
+$ ignore parenthesis
+$ write DATABASE_URL=postgresql://(user):(password)@localhost:5432/(tablename)
+```
+
+5. Select python interpreter (VSCODE):
 ```
 $ ctrl+shift+p
 $ select python interpreter (recommended)
 ```
 
-4. Finally start the web server (run main.py):
+6. Finally start the web server (run main.py):
 ```
 $ (env) python main.py
 ```
