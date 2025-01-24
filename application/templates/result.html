@@ -41,30 +41,69 @@
         <button id="json_button" name="show" onclick="toggleJSON()" style="margin-top: 5px;">Show JSON</button>
         <div class="">
             <div id="json_container" class="" style="border: solid 1px black;display: none;padding: 10px 10px;margin-top: 5px;">
-                <strong>JSON:</strong>  {
+                {
                 <br/>
-                
                 {% for item in data.keys() %}
-                    {% if data[item]|length > 1  %}
-                        <div class="">
-                        &emsp;
-                        <strong style="text-transform: uppercase;">{{item}}:</strong> 
-                        {
-                            {% for key in data[item].keys() %}
-                            {% if data[item][key] != '' and data[item][key] != None %}
-                                <div class="" style="display: flex;justify-items: start; align-items: start;gap: 5px;">
-                                    &emsp;&emsp;
-                                    <div class="">
-                                        <span style="font-weight: 600;">{{ key }}:</span>
-                                    </div>
+                    {% if not data[item]|is_list %}
+                        {% if data[item]|length > 1  %}
+                            <div class="">
+                                &emsp;
+                                <strong style="text-transform: uppercase;">"{{item}}":</strong> 
+                                {
+                                    {% for key in data[item].keys() %}
+                                    {% if data[item][key] != '' and data[item][key] != None %}
+                                        <div class="" style="display: flex;justify-items: start; align-items: start;gap: 5px;">
+                                            &emsp;&emsp;
+                                            <div class="">
+                                                <span style="font-weight: 600;">"{{ key }}":</span>
+                                            </div>
 
-                                    <div class="" style="flex-grow: 1;word-break: break-all;">
-                                    {{data[item][key]}}
+                                            <div class="" style="flex-grow: 1;word-break: break-all;">
+                                            {% if data[item][key]|is_list %}
+                                                {{data[item][key]}},
+                                            {% elif data[item][key] is integer %}
+                                                {{data[item][key]}},
+                                            {% else %}
+                                                "{{data[item][key]}}",
+                                            {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                &emsp;},
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="">
+                            &emsp;
+                            <strong style="text-transform: uppercase;">{{item}}:</strong> [
+                            {% for arr_item in data[item] %}
+                                <br/>
+                                &emsp;&emsp;{
+                                {% for key in arr_item.keys() %}  
+                                    {% if arr_item[key] != '' and arr_item[key] != None %}
+                                    <div class="" style="display: flex;justify-items: start; align-items: start;gap: 5px;">
+                                        &emsp;&emsp;&emsp;
+                                        <div class="">
+                                            <span style="font-weight: 600;">"{{ key }}":</span>
+                                        </div>
+
+                                        <div class="" style="flex-grow: 1;word-break: break-all;">
+                                        {% if arr_item[key]|is_list %}
+                                            {{arr_item[key]}},
+                                        {% elif arr_item[key] is integer %}
+                                            {{arr_item[key]}},
+                                        {% else %}
+                                            "{{arr_item[key]}}",
+                                        {% endif %}
+                                        </div>
                                     </div>
-                                </div>
-                            {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                &emsp;&emsp;},
                             {% endfor %}
-                        &emsp;},
+                            <br/>
+                            &emsp;],
                         </div>
                     {% endif %}
                 {% endfor %}
