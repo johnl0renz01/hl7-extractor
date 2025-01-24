@@ -9,7 +9,7 @@
     <div class="output-container">
         <div class="row py-2">
             <div class="col mt-3">
-                <a href="/" style="background-color: ButtonFace; color: black; padding: 3px 10px;border: solid 1px #838383;text-decoration: none;">Go Back</a>
+                <a href="#" onclick="homePage()" style="background-color: ButtonFace; color: black; padding: 3px 10px;border: solid 1px #838383;text-decoration: none;">Go Back</a>
             </div>
             <div class="col">
                 <h1 style="text-align: center">Results</h1>
@@ -18,7 +18,9 @@
             </div>
         </div>
 
+        <hr/>
         
+        <!-- FILTER -->
         <form class="" action="{{ url_for('views.extract', id=current_id) }}" method="GET" id="category">
             <strong>Filter Segments:</strong>
             {% for key in segment_keys.keys() %}
@@ -33,6 +35,44 @@
         <button type="submit" form="category">Update Result(s)</button>
         <a href="/result/{{current_id}}" style="background-color: ButtonFace; color: black; padding: 2px 5px;border: solid 1px black;text-decoration: none;">Reset</a>
 
+        <br/>
+
+        <!-- JSON -->
+        <button id="json_button" name="show" onclick="toggleJSON()" style="margin-top: 5px;">Show JSON</button>
+        <div class="">
+            <div id="json_container" class="" style="border: solid 1px black;display: none;padding: 10px 10px;margin-top: 5px;">
+                <strong>JSON:</strong>  {
+                <br/>
+                
+                {% for item in data.keys() %}
+                    {% if data[item]|length > 1  %}
+                        <div class="">
+                        &emsp;
+                        <strong style="text-transform: uppercase;">{{item}}:</strong> 
+                        {
+                            {% for key in data[item].keys() %}
+                            {% if data[item][key] != '' and data[item][key] != None %}
+                                <div class="" style="display: flex;justify-items: start; align-items: start;gap: 5px;">
+                                    &emsp;&emsp;
+                                    <div class="">
+                                        <span style="font-weight: 600;">{{ key }}:</span>
+                                    </div>
+
+                                    <div class="" style="flex-grow: 1;word-break: break-all;">
+                                    {{data[item][key]}}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% endfor %}
+                        &emsp;},
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                }
+            </div>
+        </div>
+
+        <!-- TABLE DATA MAPPING -->
         
         {# For non repeating segment (SINGLE) #}
         {% for item in data.keys() %}

@@ -131,7 +131,7 @@
                     </td>
                     <td class="text-center">{{ message.date_created.date() }}</td>
                     <td class="text-center">
-                        <a class="text-dark" href="/result/{{message.id}}"><u>Extract</u></a>
+                        <a class="text-dark" href="/result/{{message.id}}" onclick="setLinkURL()"><u>Extract</u></a>
                         <form action="/delete/{{message.id}}" method="POST">
                             <button class="text-danger" type="submit" onclick="confirmDelete(event)" id="{{message.id}}">Delete</button>
                         </form>

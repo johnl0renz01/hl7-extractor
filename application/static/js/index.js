@@ -1,3 +1,5 @@
+// ON LOAD
+
 window.addEventListener('load', function() {
   isToggled = window.sessionStorage.getItem("TOGGLE_FORM")
 
@@ -9,7 +11,9 @@ window.addEventListener('load', function() {
     document.getElementById("toggle").textContent = 'Hide Form'
   }
 
+  window.sessionStorage.removeItem("INDEX_LINK")
   changeFilterDisplay()
+  document.getElementById("json_container").style.display = "none"
 })
 
 function toggleForm() {
@@ -52,6 +56,8 @@ function navigatePage(e) {
   searchQuery("page", e)
 }
 
+// SEARCH
+
 function searchQuery(key, e) {
   queryString = window.location.search
   let params = new URLSearchParams(queryString);
@@ -85,6 +91,8 @@ function searchQuery(key, e) {
   window.location.replace(link);
 }
 
+// FILTER
+
 function changeFilter(e) {
   val = e.target.value
   window.sessionStorage.setItem("FILTER_BY", val)
@@ -115,8 +123,6 @@ function changeFilterDisplay() {
 }
 
 
-
-
 function filterDay(e) {
   val = e.target.value
   console.log(val)
@@ -135,3 +141,34 @@ function filterYear(e) {
   document.getElementById("yearForm").submit();
 }
 
+
+// URL
+
+function setLinkURL() {
+  window.sessionStorage.setItem("HOME_LINK", window.location.href)
+}
+
+function homePage(){
+  link =  window.sessionStorage.getItem("HOME_LINK")
+  if (link !== null) {
+    window.location.replace(link);
+  }
+}
+
+
+// JSON
+
+function toggleJSON() {
+  currentState = document.getElementById('json_button').name
+
+  if (currentState == 'show') {
+    document.getElementById('json_button').name = 'hide';
+    document.getElementById('json_button').textContent = 'Hide JSON';
+    document.getElementById("json_container").style.display = "inline-block"
+  } else {
+    document.getElementById('json_button').name = 'show';
+    document.getElementById('json_button').textContent = 'Show JSON';
+    document.getElementById("json_container").style.display = "none"
+  }
+  
+}
