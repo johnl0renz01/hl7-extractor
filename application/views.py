@@ -4,13 +4,15 @@ from .models import Unparsed, MSH_Model, PID_Model, PV1_Model, ORC_Model, OBR_Mo
 
 from . import db
 import json
+from collections import OrderedDict
+import orjson
 
 from sqlalchemy import func
 from .utils.parser import parseData
 from .utils.convertor import convertMessage
+from datetime import datetime
 
 from hl7apy.parser import parse_message
-
 
 views = Blueprint('views', __name__)
 
@@ -124,9 +126,18 @@ def delete(id):
         return 'There was a problem deleting that task'
     
 
+# Custom serializer
+def custom_serializer(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()  # Convert datetime to ISO 8601 string
+    raise TypeError(f"Type {type(obj)} not serializable")
+    
+
 @views.route('/result/<int:id>', methods=['GET'])
 def extract(id):
     data = {}
+
+    json_data = {"asd": "z"}
 
     def getData(segment_str, segment_model):
         segment = segment_model.query.filter_by(unparsed_msg_id=id).all()
@@ -138,9 +149,12 @@ def extract(id):
 
         segment_row = [row.as_dict() for row in segment]
 
+        
+
         for current_segment in segment_row:
             del current_segment['id'] # remove id column
             del current_segment['unparsed_msg_id'] # remove unparsed_msg_id column  
+
         
             for key, val in current_segment.items():
                 if isinstance(val, str):
@@ -149,8 +163,7 @@ def extract(id):
                         val = val.replace('}', '')
                         val = val.split(',')
                         current_segment[key] = val
-
-
+                        
         if len(segment_row) == 1:
             segment_row = segment_row[0]
 
@@ -168,6 +181,8 @@ def extract(id):
         if not result:
             empty_segments.append(key)
 
+    
+
     for idx in range(len(empty_segments)):
         del segments[empty_segments[idx]]
 
@@ -179,4 +194,8 @@ def extract(id):
                 value = segments[item]
                 getData(item, value)      
     
-    return render_template("result.html", data=data, current_id=id, segment_keys=segments, category=category)
+    json_data = data
+    json_data = orjson.dumps(json_data).decode("utf-8")
+   
+
+    return render_template("result.html", data=data, current_id=id, segment_keys=segments, category=category, json_data=json_data)

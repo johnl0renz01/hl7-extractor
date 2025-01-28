@@ -50,7 +50,7 @@ class MSH_Model(db.Model):
     receiving_responsible_organization = Column(String, nullable=True)  # MSH-23
     sending_network_address = Column(String, nullable=True)  # MSH-24
     receiving_network_address = Column(String, nullable=True)  # MSH-25
-    date_created = Column(DateTime(timezone=True), server_default=func.now())  # Auto-created timestamp
+    # date_created = Column(DateTime(timezone=True), server_default=func.now())  # Auto-created timestamp
 
 
     def __repr__(self):
@@ -138,7 +138,7 @@ class PID_Model(db.Model):
     production_class_code = Column(ARRAY(String), nullable=True)  # PID-38
     tribal_citizenship = Column(ARRAY(String), nullable=True)  # PID-39
     patient_telecommunication_information = Column(ARRAY(String), nullable=True)  # PID-40
-    date_created = Column(DateTime(timezone=True), server_default=func.now())  # Auto-created timestamp
+    # date_created = Column(DateTime(timezone=True), server_default=func.now())  # Auto-created timestamp
 
     def __repr__(self):
         return f"<PID Patient ID: {self.patient_id}>"

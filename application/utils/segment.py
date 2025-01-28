@@ -257,24 +257,9 @@ def obx_dict():
         "local_process_control": []                      # OBX-28: Local Process Control
     }
 
-# String types
-string_set = {"ST", "ID", "IS", "FT", "TX"}
-
-# Numeric types
-numeric_set = {"NM", "SI"}
-
-# Datetime types
-datetime_set = {"DT", "TM", "DTM", "TS"}
-
-# Extend String types
-hierarchical_set = {"HD", "EI", "PT", "VID", "CWE", "XON", "MSG", "CX", "XPN", "XAD", "XTN"}
-custom_set = {"CWE", "EI", "HD", "XON", "CX", "XPN", "XAD", "XTN"}
-
-# string_set.update(datetime_set)
-string_set.update(hierarchical_set)
-string_set.update(custom_set)
 
 
+from .field_types import string_set, numeric_set, datetime_set, hierarchical_set, custom_set
 from hl7apy.parser import parse_field
 from datetime import datetime
 

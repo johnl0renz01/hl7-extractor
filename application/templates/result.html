@@ -35,8 +35,66 @@
         <button type="submit" form="category">Update Result(s)</button>
         <a href="/result/{{current_id}}" style="background-color: ButtonFace; color: black; padding: 2px 5px;border: solid 1px black;text-decoration: none;">Reset</a>
 
-        <br/>
+        <br/> 
+        <script src="https://cdn.jsdelivr.net/npm/json2csv"></script>
+        <script>
+            //`data` is a Python variable (object) passed to the template
+            
+            const data = {{ json_data | safe }};
 
+            function exportCSV(data) {
+                var dataCopy = JSON.parse(JSON.stringify(data))
+                for (const [key, value] of Object.entries(dataCopy)) {
+                    if (Object.keys(data[key]).length == 1) {
+                        delete data[key]
+                        continue
+                    }
+                    for (const [key2, value2] of Object.entries(value)) {
+                        if (value2 === null || value2 == '') {
+                            delete data[key][key2]
+                        }
+                        
+                    }
+                }
+
+                const csvRows = [];
+
+                // Helper function to add a section
+                const addSection = (label, sectionData) => {
+                    csvRows.push({ section: label, key: "", value: "" }); // Section label row
+                    csvRows.push(...Object.entries(sectionData).map(([key, value]) => ({
+                        section: "",
+                        key,
+                        value: Array.isArray(value) ? JSON.stringify(value) : value ?? "", // Convert arrays to JSON strings and handle nulls
+                    })));
+                    csvRows.push({ section: "", key: "", value: "" }); // Blank row for spacing
+                };
+
+                for (const [key, value] of Object.entries(data)) {
+                    addSection(key, data[key]);
+                }
+
+                // Convert to CSV
+                const csvData = json2csv.parse(csvRows, { fields: ["section", "key", "value"] });
+
+                downloadCsv("test", csvData)
+            }
+
+            function downloadCsv(filename, csvData) {
+                const element = document.createElement("a");
+
+                element.setAttribute("href", `data:text/csv;charset=utf-8,${csvData}`)
+                element.setAttribute("download", filename)
+                element.style.display = "none"
+
+                document.body.appendChild(element)
+
+                element.click()
+                document.body.removeChild(element)
+            }
+        </script>
+
+        <button onclick="exportCSV(data)">Export CSV</button>
         <!-- JSON -->
         <button id="json_button" name="show" onclick="toggleJSON()" style="margin-top: 5px;">Show JSON</button>
         <div class="">
