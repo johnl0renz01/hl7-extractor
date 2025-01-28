@@ -62,18 +62,32 @@
                 // Helper function to add a section
                 const addSection = (label, sectionData) => {
                     csvRows.push({ section: label, key: "", value: "" }); // Section label row
-                    csvRows.push(...Object.entries(sectionData).map(([key, value]) => ({
-                        section: "",
-                        key,
-                        value: Array.isArray(value) ? JSON.stringify(value) : value ?? "", // Convert arrays to JSON strings and handle nulls
-                    })));
+
+                    if (sectionData.length > 1) {
+                        for (item in sectionData) {
+                            csvRows.push({ section: "", key: `obx_${parseInt(item)+1}`, value: "" });
+                            csvRows.push(...Object.entries(sectionData[item])
+                            .filter(([key, value]) => value !== null && value !== '')
+                            .map(([key, value]) => ({
+                                section: "",
+                                key,
+                                value: Array.isArray(value) ? JSON.stringify(value) : value ?? "", // Convert arrays to JSON strings and handle nulls
+                            })));
+                            csvRows.push({ section: "", key: "", value: "" }); // Blank row for spacing
+                        }
+                    } else {
+                        csvRows.push(...Object.entries(sectionData).map(([key, value]) => ({
+                            section: "",
+                            key,
+                            value: Array.isArray(value) ? JSON.stringify(value) : value ?? "", // Convert arrays to JSON strings and handle nulls
+                        })));
+                    }
                     csvRows.push({ section: "", key: "", value: "" }); // Blank row for spacing
                 };
 
                 for (const [key, value] of Object.entries(data)) {
                     addSection(key, data[key]);
                 }
-
                 // Convert to CSV
                 const csvData = json2csv.parse(csvRows, { fields: ["section", "key", "value"] });
 
