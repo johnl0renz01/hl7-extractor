@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>HL7 Extractor</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="content pb-5" style="width: 50%;" >
+
+    <h1>Fruit Distribution Pie Chart</h1>
+    <div id="chart"></div>
+
+    <script>
+        // Get the graph JSON data from Flask
+        var graphJSON = {{ graph_json | safe }};
+
+        // Render the chart in the div
+        Plotly.newPlot('chart', graphJSON.data, graphJSON.layout);
+    </script>
+</div>
+{% endblock %}

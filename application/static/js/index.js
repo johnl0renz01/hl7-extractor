@@ -12,6 +12,8 @@ window.addEventListener('load', function() {
   }
 
   window.sessionStorage.removeItem("INDEX_LINK")
+
+  document.getElementById("filterby_placeholder").disabled = true;
   changeFilterDisplay()
   document.getElementById("json_container").style.display = "none"
 })
@@ -56,6 +58,7 @@ function navigatePage(e) {
   searchQuery("page", e)
 }
 
+
 // SEARCH
 
 function searchQuery(key, e) {
@@ -93,15 +96,20 @@ function searchQuery(key, e) {
 
 // FILTER
 
-function changeFilter(e) {
-  val = e.target.value
-  window.sessionStorage.setItem("FILTER_BY", val)
-
-  changeFilterDisplay()
+function resetFilter() {
+  window.sessionStorage.removeItem("FILTER_BY")
 }
 
-function changeFilterDisplay() {
-  val = window.sessionStorage.getItem("FILTER_BY")
+function changeFilter(e) {
+  val = e.target.value
+
+  changeFilterDisplay(val)
+}
+
+function changeFilterDisplay(val=null) {
+  if (!val) {
+    val = window.sessionStorage.getItem("FILTER_BY")
+  }
   document.getElementById("filterBy").value = val
 
   hideAll();
@@ -110,7 +118,7 @@ function changeFilterDisplay() {
     document.getElementById("year").style.display = "block"
   } else if (val == "month") {
     document.getElementById("month").style.display = "block"
-  } else {
+  } else if (val == "day") {
     document.getElementById("day").style.display = "block"
   }
 
@@ -125,19 +133,19 @@ function changeFilterDisplay() {
 
 function filterDay(e) {
   val = e.target.value
-  console.log(val)
+  window.sessionStorage.setItem("FILTER_BY", "day")
   document.getElementById("dayForm").submit();
 }
 
 function filterMonth(e) {
   val = e.target.value
-  console.log(val)
+  window.sessionStorage.setItem("FILTER_BY", "month")
   document.getElementById("monthForm").submit();
 }
 
 function filterYear(e) {
   val = e.target.value
-  console.log(val)
+  window.sessionStorage.setItem("FILTER_BY", "year")
   document.getElementById("yearForm").submit();
 }
 
@@ -171,4 +179,9 @@ function toggleJSON() {
     document.getElementById("json_container").style.display = "none"
   }
   
+}
+
+function analyzeData() {
+  document.getElementById('analysis').style.position = "relative";
+  document.getElementById('analysis').style.top = 0;
 }

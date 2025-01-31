@@ -4,3 +4,10 @@ psycopg2-binary
 flask_sqlalchemy
 hl7apy
 orjson
+
+plotly
+pandas
+numpy
+
+
+extensions

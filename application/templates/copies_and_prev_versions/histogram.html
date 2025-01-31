@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>HL7 Extractor</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="content pb-5" style="width: 50%;" >
+    <h1>Histogram - Value Distribution</h1>
+    <!-- Container for the Plotly graph -->
+    <iframe srcdoc="{{ fig_html }}" width="600" height="400" frameborder="0" scrolling="no" style="overflow: hidden;"></iframe>
+    <iframe srcdoc="{{ fig_html2 }}" width="600" height="400" frameborder="0" scrolling="no" style="overflow: hidden;"></iframe>
+</div>
+{% endblock %}

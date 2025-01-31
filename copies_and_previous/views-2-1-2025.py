@@ -223,6 +223,107 @@ def extract(id):
     return render_template("result.html", data=data, current_id=id, segment_keys=segments, category=category, json_data=json_data)
 
 
+
+
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+
+
+
+
+import json
+import pandas as pd
+import plotly.express as px
+import plotly.utils  # Import plotly.utils for JSON conversion
+
+@views.route('/piechart', methods=['GET'])
+def piechart():
+    # Create Pie Chart Data as DataFrame
+    df = pd.DataFrame({
+        "labels": ["Apple", "Banana", "Cherry"],
+        "values": [30, 40, 30]
+    })
+
+    # Create Plotly Pie Chart
+    fig = px.pie(df, names="labels", values="values", title="Fruit Distribution")
+
+    # Convert Plotly Figure to JSON using plotly.utils
+    graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template("piechart.html", graph_json=graph_json)
+
+import json
+import plotly.express as px
+import pandas as pd
+import plotly.io as pio
+
+@views.route('/histogram', methods=['GET'])
+def histogram():
+    # Create sample data for the histogram
+    df = pd.DataFrame({
+        "Values": [10, 20, 20, 30, 40, 40, 40, 50, 60, 60, 70, 80, 90, 100, 100,
+                   110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220]
+    })
+
+    # Create histogram
+    fig = px.histogram(df, x="Values", title="Value Distribution with More Data", nbins=15)
+
+    # fig = px.bar(x=["a", "b", "c", "d", "e", "f"], y=[1,2,3,4,5,6])
+    # fig.show()
+
+    fig_html = fig.to_html(full_html=False)
+
+
+    df = pd.DataFrame({
+        "labels": ["Apple", "Banana", "Cherry"],
+        "values": [30, 40, 30]
+    })
+
+    # Create Plotly Pie Chart
+    fig = px.pie(df, names="labels", values="values", title="Fruit Distribution")
+    fig_html2 = fig.to_html(full_html=False)
+
+    # Return the HTML with iframe embedding the Plotly figure
+    return render_template('histogram.html', fig_html=fig_html, fig_html2=fig_html2)
+    
+    # Update axis labels
+    fig.update_layout(
+        xaxis_title="Value",
+        yaxis_title="Frequency"
+    )
+
+    # Convert Plotly figure to JSON using plotly.io.to_json
+    graph_json = json.dumps(pio.to_json(fig))
+
+    return render_template("histogram.html", graph_json=graph_json)
+
+from plotly import utils
+from json import dumps
+
+@views.route('/test', methods=['GET'])
+def test():
+    data = {
+        'Year': [2015, 2016, 2017, 2018, 2019, 2020, 2021],
+        'AI': [50, 75, 120, 180, 220, 250, 280],
+        'Cloud': [40, 70, 110, 140, 170, 200, 240],
+        'Blockchain': [5, 15, 40, 100, 150, 200, 250]
+    }
+
+    # Convert the data into a pandas DataFrame
+    df = pd.DataFrame(data)
+
+    # Create a line plot with Plotly
+    fig = px.line(df, x='Year', y=['AI', 'Cloud', 'Blockchain'], title='Publications Over Time')
+    fig.update_layout(title='Publications in AI, Cloud, and Blockchain')
+    fig.show()
+    # turn the figure into a JSON then pass it to the template
+    all_pub_json = dumps(fig, cls=utils.PlotlyJSONEncoder)
+    return render_template('abc.html', pub_lines_JSON=all_pub_json)
+
+
+
 ###########################
 ###########################
 # FUNCTIONS

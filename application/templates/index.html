@@ -8,10 +8,10 @@
 
 <div class="content pb-5" style="width: 50%;" >
     <div style="text-align: center"><h1>HL7 Extractor</h1>
-        <button id="toggle" onclick="toggleForm()" type="button"></button>
+        <button id="toggle" onclick="toggleForm()" type="button">Show Form</button>
     </div>
     
-    <div class="form" id="form">
+    <div class="form" id="form" style="display:none">
         <form action="/" method="POST">
             <textarea type="text" name="content" id="content" style="width: 100%;" rows="15" placeholder="Enter HL7 message..."></textarea>
             <div class="" style="float: right;">
@@ -26,12 +26,15 @@
     {% if not messages %}
     <h4 style="text-align: center">There are no messages. Create one above!</h4>
     {% else %}
-
     <div class="" style="display: flex; justify-content: space-between;align-items: center;">
-        <div class="" style="display: flex; gap: 5px;align-items: center;">
-            <a href="/" style="background-color: ButtonFace; color: black; padding: 2px 5px;border: solid 1px black;text-decoration: none;">Reset Filter</a>
+        <div class="" style="display: flex; gap: 5px;align-items: center;padding: 10px 0 10px 0;">
+            {% if messages.pages > 0 %}
+            <button id="analyze" name="show" onclick="analyzeData()" style="margin-right: 5px;padding: 2px 5px;">Analyze Data</button>
+            {% endif %}
+            <a href="/" onclick="resetFilter()" style="background-color: ButtonFace; color: black; padding: 2px 5px;border: solid 1px black;text-decoration: none;">Reset Filter</a>
             <div class="pl-5"><strong>Filter By:</strong>
                 <select name="filterBy" id="filterBy" style="margin-top: 2px;padding-right: 5px;" onchange="changeFilter(event)">
+                    <option value="" id="filterby_placeholder"></option>
                     <option value="day">Day</option>
                     <option value="year">Year</option>
                     <option value="month">Month</option>
@@ -40,16 +43,16 @@
             <div class="">
                 
                 <form id="dayForm" action="/" method="GET">
-                    <input id="day" name="day" type="date" onchange="filterDay(event)" value="{{ day }}">
+                    <input id="day" name="day" type="date" style="display: none;" onchange="filterDay(event)" value="{{ day }}">
                     
                 </form>
 
                 <form id="monthForm" action="/" method="GET">
-                    <input id="month" name="month" type="month" onchange="filterMonth(event)" value="{{ month }}">
+                    <input id="month" name="month" type="month" style="display: none;" onchange="filterMonth(event)" value="{{ month }}">
                 </form>
 
                 <form id="yearForm" action="/" method="GET">
-                    <select id="year" name="year" style="margin-top: 2px;padding-right: 5px;" onchange="filterYear(event)">
+                    <select id="year" name="year" style="display: none;margin-top: 2px;padding-right: 5px;" onchange="filterYear(event)">
                         {% if not year %}
                         <option value="" disabled selected></option>
                         {% endif %}
@@ -152,6 +155,19 @@
         </tbody>
     </table>
 
+    
+
+    <div class="mt-5" id="analysis" style="position: absolute; top: -1000px;">
+        <div class=""><h4>Analysis</h4></div>
+        <div class="" style="display: grid;grid-template-columns: repeat(2, 1fr);gap: 10px;">
+            <div class="" style="border: 1px solid black; margin-top: 5px;overflow: hidden;display: inline-block;padding: 20px;user-select: none;">
+                <iframe srcdoc="{{ fig_gender }}" width="100%" height="400" frameborder="0" scrolling="no" style="margin: -10px 0 0 -10px;"></iframe>
+            </div>
+            <div class="" style="border: 1px solid black; margin-top: 5px;overflow: hidden;display: inline-block;padding: 20px;user-select: none;">  
+                <iframe srcdoc="{{ fig_age }}" width="100%" height="400" frameborder="0" scrolling="no" style="margin: -10px 0 0 -10px;"></iframe>
+            </div>
+        </div>
+    </div>
     {% endif %}
 </div>
 
