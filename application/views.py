@@ -8,7 +8,7 @@ import plotly.express as px
 import pandas as pd
 
 
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 import orjson
 
 from sqlalchemy import func
@@ -95,11 +95,15 @@ def home():
 
         # Get data
         pid = getPID(data)
+
         dob = [item[0] for item in pid]
         dob = json.dumps(dob, default=date_serializer)
         dob = json.loads(dob)
 
         gender = [item[1] for item in pid]
+
+        msh = getMSH(data)
+        msg_type = msh
 
 
         # Process data to analyze
@@ -111,6 +115,10 @@ def home():
         obj = analyzeAge(dob)
         df = pd.DataFrame(obj)
         fig_age = px.histogram(df, x="Values", title="Age Distribution", nbins=15)
+
+
+        obj = analyzeMsgType(msg_type)
+        fig_msg_type = px.bar(obj, x='Category', y='Count', title="Message Type (Sorted by Frequency)", color='Category')
 
 
         if order == "oldest":
@@ -129,7 +137,7 @@ def home():
             return figure.to_html(full_html=False)
 
         return render_template("index.html", messages=data, sortBy=order, day=day, month=month, year=year, 
-                               fig_gender=figureToHTML(fig_gender), fig_age=figureToHTML(fig_age))
+                               fig_msg_type=figureToHTML(fig_msg_type), fig_gender=figureToHTML(fig_gender), fig_age=figureToHTML(fig_age))
 
 @views.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -237,20 +245,33 @@ def getPID(data):
         return PID_Model.query.with_entities(PID_Model.date_time_of_birth, PID_Model.administrative_sex).filter(PID_Model.unparsed_msg_id.in_(filtered_data)).all()
     else:
         return PID_Model.query.with_entities(PID_Model.date_time_of_birth, PID_Model.administrative_sex).all()
+    
+def getMSH(data):
+    if data:
+        filtered_data = []
+        for record in data:
+            filtered_data.append(record.id)
+
+        return MSH_Model.query.with_entities(MSH_Model.message_type).filter(MSH_Model.unparsed_msg_id.in_(filtered_data)).all()
+    else:
+        return MSH_Model.query.with_entities(MSH_Model.message_type).all()
 
 
 def analyzeAge(data):
     obj = {"Values": []}
     for record in data:
-        dob = datetime.fromisoformat(record)
+        if record:
+            dob = datetime.fromisoformat(record)
 
-        # Get the current time (timezone-aware), in the same timezone as the dob
-        today = datetime.now(dob.tzinfo)  # Use dob's timezone info to get the current time in the same timezone
+            # Get the current time (timezone-aware), in the same timezone as the dob
+            today = datetime.now(dob.tzinfo)  # Use dob's timezone info to get the current time in the same timezone
 
-        # Calculate the age
-        age = today.year - dob.year
+            # Calculate the age
+            age = today.year - dob.year
 
-        obj['Values'].append(age)
+            obj['Values'].append(age)
+        else:
+            obj['Values'].append(None)
 
     return obj
 
@@ -259,10 +280,13 @@ def analyzeGender(data):
     obj = {"gender": [],
             "total": []}
     for record in data:
-        if record.upper() == "M":
-            obj['gender'].append("Male")
-        elif record.upper() == "F":
-            obj['gender'].append("Female")
+        if record:
+            if record.upper() == "M":
+                obj['gender'].append("Male")
+            elif record.upper() == "F":
+                obj['gender'].append("Female")
+            else:
+                obj['gender'].append("None")
         else:
             obj['gender'].append("None")
 
@@ -270,6 +294,19 @@ def analyzeGender(data):
 
     return obj
 
+def analyzeMsgType(data):
+    flattened_data = [item[0] for item in data]
+    obj = []
+    for record in flattened_data:
+        obj.append(record)
+
+    word_counts = Counter(obj)
+    # Sort the word counts by the frequency (descending order)
+    sorted_word_counts = sorted(word_counts.items(), key=lambda x: x[1], reverse=False)
+
+    # Convert sorted word counts to a format Plotly can use
+    obj = {'Category': [item[0] for item in sorted_word_counts], 'Count': [item[1] for item in sorted_word_counts]}
+    return obj
 
 
 # df = pd.DataFrame(obj)

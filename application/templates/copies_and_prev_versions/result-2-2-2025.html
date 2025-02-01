@@ -226,43 +226,31 @@
 
                 <div class="font-weight-bold text-uppercase mt-4">{{ item }}</div>
 
+                
                 <table style="table-layout: auto">
-                    {% set non_empty_keys = [] %}
                     <tr>
                         {% for key in data[item][0] %}
-                            {% set values = [] %}
-                            {% for arr_item in data[item] %}
-                                {% if arr_item[key] != '' and arr_item[key] != None %}
-                                    {% set values = append_to_list(values, arr_item[key]) %}
-                                {% endif %}
-                            {% endfor %}
-                            
-                            {% if values|length >= 1 %}
-                                {% set non_empty_keys = append_to_list(non_empty_keys, key) %}
-                                <th style="padding-right: 20px;white-space:wrap;">{{ loop.index }}. {{key}}</th>
-                            {% endif %}
+                            <th style="padding-right: 20px;white-space:wrap;">{{ loop.index }}. {{key}}</th>
                         {% endfor %}
                     </tr>
-                    
+
                     {% for arr_item in data[item] %}
                         <tr>
-                            {% for key in arr_item.keys() %}
-                                    {% if arr_item[key]|is_list %}
+                            {% for val in arr_item.values() %}
+                                    {% if val|is_list %}
                                         <td style="padding-right: 20px;white-space:wrap;">
-                                        {% for _ in  arr_item[key] %}
+                                        {% for _ in val %}
                                             {% if _ != '' %}
                                             <li>{{_}}</li>
                                             {% endif %}
                                         {% endfor %}
                                         </td>
                                     {% else %}
-                                        {% if key in non_empty_keys %}
-                                            <td style="padding-right: 20px;white-space:wrap;">
-                                                {% if  arr_item[key] != '' and  arr_item[key] != None %}
-                                                    {{ arr_item[key] }}
-                                                {% endif %}
-                                            </td>
-                                        {% endif %}
+                                        <td style="padding-right: 20px;white-space:wrap;">
+                                            {% if val != '' and val != None %}
+                                                {{val}}
+                                            {% endif %}
+                                        </td>
                                     {% endif %}
                             {% endfor %}
                         </tr>
